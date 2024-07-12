@@ -1,0 +1,19 @@
+Write a simple app in Python that opens some APIs using Python and yt_dlp:
+
+/api/get-download-info?url={url}: Uses YoutubeDL.extract_info with download=False, and returns some info in JSON such as: id, title, _type, thumbnail, duration, duration_string, extractor.
+In this function, please look at the _type field. If it's 'video' or null, read the 'formats' element and add this element to the response object: formats[], which is an array with: ext, format_id, url, vcodec, acodec, filesize_approx, audio_ext, video_ext, format.
+If the _type field is 'playlist', read the 'entries' item and add this array to the response object: listItems[] containing id, title, thumbnail, original_url.
+
+/api/start-download?url={url}&format={format}: Uses the YoutubeDL.download function. This API will return the sessionId as uuid(), which generates a new random UUID. This function will start downloading the file and then write the status to /status/[sessionId].json. When the download_hook is triggered, the sessionId JSON file will have data like: {'Step': 'Downloading', 'Percent': 30.4}. When postprocessor_hook starts, the sessionId JSON file will have data like: {'Step': 'Processing'}. When postprocessor_hook finishes, the sessionId JSON file will contain {'Step': 'Finished', 'FileName': '/output/asdasdasd.mp4'}.
+Ensure that the status folder is created before writing the sessionId.json file.
+Don't wait for the YoutubeDL.download to return; please return the session id to the user first, and we will download the file in the background.
+
+/api/session-status/{sessionId}: Reads the sessionId JSON and returns the info.
+
+/api/download-file/{sessionId}: Reads the sessionId, then returns the file from the FileName path to the user for download.
+
+A 404 page to catch all non-routed requests.
+
+Please use a very simple structure, with some files like main.py, /api/get_download_info.py, /api/start_download.py, /api/session_status.py, /api/download_file.py.
+
+Please add the requirements.txt and the readme.md that have instructions to install and use the app.
