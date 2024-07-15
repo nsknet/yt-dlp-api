@@ -14,6 +14,9 @@ Don't wait for the YoutubeDL.download to return; please return the session id to
 
 A 404 page to catch all non-routed requests.
 
+schedules\folder_cleanup.py, in this function , please add function folder_cleanup, it will check: all files in the status folder, all files in the output folder. if any file that have date create greater than 2 hours, delete them.  please add the folder_cleanup function in a try catch to avoid any isssue if a file can not be deleted. Run this function in schedule every minutes
+
+
 Please use a very simple structure, with some files like main.py, /api/get_download_info.py, /api/start_download.py, /api/session_status.py, /api/download_file.py.
 
 Please add the requirements.txt and the readme.md that have instructions to install and use the app.
