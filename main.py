@@ -10,7 +10,8 @@ app = Flask(__name__)
 
 # Import API endpoints
 from api import get_download_info, start_download, session_status, download_file, get_download_json
-from p404 import bp as index_bp
+from pages import index
+from pages.p404 import bp as p404
 
 # Register API endpoints
 app.register_blueprint(get_download_info.bp)
@@ -18,9 +19,10 @@ app.register_blueprint(start_download.bp)
 app.register_blueprint(session_status.bp)
 app.register_blueprint(download_file.bp)
 app.register_blueprint(get_download_json.bp)
+app.register_blueprint(index.bp)
 
 # Register the index blueprint to handle un-routed URLs
-app.register_blueprint(index_bp)
+app.register_blueprint(p404)
 
 
 # setup scheduler
