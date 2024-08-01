@@ -1,3 +1,4 @@
+import platform
 from flask import Blueprint, request, jsonify
 import yt_dlp
 import os
@@ -17,13 +18,20 @@ def create_folder(folder_path):
 def download_video(url, format, session_id):
     
     
-    ffmpeg_path = os.path.join(os.getcwd(), 'tools', 'ffmpeg.exe')
+    if platform.system() == 'Windows':
+        ffmpeg_path = os.path.join(os.getcwd(), 'tools', 'win64', 'ffmpeg.exe')
+    elif platform.system() == 'Linux':
+        ffmpeg_path = os.path.join(os.getcwd(), 'tools', 'linux64', 'ffmpeg')
+    else:
+        raise EnvironmentError("Unsupported OS")
+
     ydl_opts = {
         'format': format,
-        # 'ffmpeg_location': ffmpeg_path,
+        'ffmpeg_location': ffmpeg_path,
         'progress_hooks': [lambda d: download_hook(d, session_id)],
         'postprocessor_hooks': [lambda d: postprocessor_hook(d, session_id)],
         'outtmpl': os.path.join('output', f'{session_id}.%(ext)s'),
+        'noplaylist': True,
     }
     try:
         create_folder('status')
