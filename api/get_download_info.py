@@ -18,7 +18,7 @@ def get_download_info():
         response = {
             'id': info.get('id'),
             'title': info.get('title'),
-            '_type': info.get('_type'),
+            '_type': info.get('_type', 'video'),
             'thumbnail': info.get('thumbnail'),
             'duration': info.get('duration'),
             'duration_string': info.get('duration_string'),
@@ -81,31 +81,65 @@ def get_detail_formats(formats):
     return formatted_formats
 
 def get_simple_formats(extractor, formats):
-    detail_formats = get_detail_formats(formats)
-    if extractor != 'youtube':
-        return detail_formats
+    if extractor == 'youtube':
+        simple_formats = []
     
-    
-    simple_formats = []
-    for fmt in detail_formats:
-        
-        #find audio only
-        
-        #find video only
-        
-        #find low resolution video with audio
-        
-        #find medium resolution video with audio
-        
-        #find best resolution video with audio
-        
-        
+            
+        #Best + fastest video
         simple_formats.append({
-
-            'friendly_name': 'friendly_name'
+            'format_description': 'Best + fastest video',
+            'format_id': 'best',
+            'ext': None,
+            'url': None,
         })
+        
+        
+        #Audio only
+        simple_formats.append({
+            'format_description': 'Audio only',
+            'format_id': 'bestaudio[abr<=128]',
+            'ext': None,
+            'url': None,
+        })
+        #SD Video
+        simple_formats.append({
+            'format_description': 'SD Video',
+            'format_id': 'worst',
+            'ext': None,
+            'url': None,
+        })
+        
+        #HD Video
+        simple_formats.append({
+            'format_description': 'HD Video',
+            'format_id': 'bestvideo[height<=720]+bestaudio/best',
+            'ext': None,
+            'url': None,
+        })
+        
+        #Best Video
+        simple_formats.append({
+            'format_description': 'Best Video',
+            'format_id': 'bestvideo+bestaudio/best',
+            'ext': None,
+            'url': None,
+        })
+            
+            
+        return simple_formats
     
-    return simple_formats
+    else:
+        simple_formats = []
+        for fmt in formats:
+            simple_formats.append({
+                'format_description': fmt.get('format'),
+               'format_id': fmt.get('format_id'),
+                'ext': fmt.get('ext'),
+                # 'url': fmt.get('url'),            
+            
+            })
+        return simple_formats
+    
 
 
 

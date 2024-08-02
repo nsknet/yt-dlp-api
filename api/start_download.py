@@ -30,7 +30,7 @@ def download_video(url, format, session_id):
         'ffmpeg_location': ffmpeg_path,
         'progress_hooks': [lambda d: download_hook(d, session_id)],
         'postprocessor_hooks': [lambda d: postprocessor_hook(d, session_id)],
-        'outtmpl': os.path.join('output', f'{session_id}.%(ext)s'),
+        'outtmpl': os.path.join('output', f'%(extractor)s-%(id)s.%(ext)s'),
         'noplaylist': True,
     }
     try:
