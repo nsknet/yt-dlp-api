@@ -9,6 +9,7 @@ def get_download_info():
     
     
     ydl_opts = {
+        'cookiefile': 'cookies.txt',
         'noplaylist': True,
     }
     
@@ -23,6 +24,7 @@ def get_download_info():
             'duration': info.get('duration'),
             'duration_string': info.get('duration_string'),
             'extractor': info.get('extractor'),
+            'url': url
         }
         if info.get('_type', 'video') == 'video':
             formats = info.get('formats', [])
@@ -86,12 +88,12 @@ def get_simple_formats(extractor, formats):
     
             
         #Best + fastest video
-        simple_formats.append({
-            'format_description': 'Best + fastest video',
-            'format_id': 'best',
-            'ext': None,
-            'url': None,
-        })
+        # simple_formats.append({
+        #     'format_description': 'Best + fastest video',
+        #     'format_id': 'best',
+        #     'ext': None,
+        #     'url': None,
+        # })
         
         
         #Audio only
@@ -104,7 +106,7 @@ def get_simple_formats(extractor, formats):
         #SD Video
         simple_formats.append({
             'format_description': 'SD Video',
-            'format_id': 'worst',
+            'format_id': 'worstvideo/worstaudio',
             'ext': None,
             'url': None,
         })

@@ -30,8 +30,9 @@ def download_video(url, format, session_id):
         'ffmpeg_location': ffmpeg_path,
         'progress_hooks': [lambda d: download_hook(d, session_id)],
         'postprocessor_hooks': [lambda d: postprocessor_hook(d, session_id)],
-        'outtmpl': os.path.join('output', f'%(extractor)s-%(id)s.%(ext)s'),
+        'outtmpl': os.path.join('output', f'%(extractor)s-%(id)s.%(format_id)s.%(ext)s'),
         'noplaylist': True,
+        'cookiefile': 'cookies.txt',
     }
     try:
         create_folder('status')
@@ -40,11 +41,11 @@ def download_video(url, format, session_id):
             ydl.download([url])
     except yt_dlp.DownloadError as e:
         print(f"Download error occurred: {e}")
-        progress = {'Step': 'Err', 'Msg': f"Download error occurred: {e}"}
+        progress = {'step': 'Err', 'msg': f"Download error occurred: {e}"}
         write_status(session_id, progress)
     except Exception as e:
         print(f"An error occurred: {e}")
-        progress = {'Step': 'Err', 'Msg': f"An error occurred: {e}"}
+        progress = {'step': 'Err', 'msg': f"An error occurred: {e}"}
         write_status(session_id, progress)
 
 
@@ -52,29 +53,29 @@ def download_video(url, format, session_id):
 def download_hook(d, session_id):
     if d['status'] == 'downloading':
         progress = {
-            'Step': 'Downloading',
-            'Percent': d['_percent_str'].strip()
+            'step': 'Downloading',
+            'percent': d['_percent_str'].strip()
         }
     elif d['status'] == 'finished':
         progress = {
-            'Step': 'Finished downloading, now post-processing',
-            'FileName': d['filename']
+            'step': 'Finished downloading, now post-processing',
+            'fileName': d['filename']
         }
     else:
-        progress = {'Step': 'Unknown'}
+        progress = {'step': 'Unknown'}
     
     write_status(session_id, progress)
 
 def postprocessor_hook(d, session_id):
     if d['status'] == 'started':
-        progress = {'Step': 'Processing'}
+        progress = {'step': 'Processing'}
     elif d['status'] == 'finished':
         progress = {
-            'Step': 'Finished',
-            'FileName': d['info_dict']['filepath']
+            'step': 'Finished',
+            'fileName': d['info_dict']['filepath']
         }
     else:
-        progress = {'Step': 'Unknown'}
+        progress = {'step': 'Unknown'}
     
     write_status(session_id, progress)
 
@@ -96,7 +97,7 @@ def start_download():
     create_folder('status')
     
     # Write initial status
-    write_status(session_id, {'Step': 'Started'})
+    write_status(session_id, {'step': 'Started'})
 
     # Start the download in a new thread
     thread = threading.Thread(target=download_video, args=(url, format, session_id))

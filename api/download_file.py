@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, jsonify, send_file
+from flask import Blueprint, jsonify, request, send_file
 import os
 
 bp = Blueprint('download_file', __name__)
@@ -15,12 +15,22 @@ def download_file(sessionId):
     with open(status_file, 'r') as f:
         status = json.load(f)
     
-    if status['Step'] != 'Finished':
+    if status['step'] != 'Finished':
         return jsonify({'error': 'File download not complete yet'}), 400
     
-    file_path = status.get('FileName')
-    
+    file_path = status.get('fileName')
+    fileName = request.args.get('fileName')
+
     if not file_path or not os.path.exists(file_path):
         return jsonify({'error': 'File not found'}), 404
     
-    return send_file(file_path, as_attachment=True)
+    if fileName:
+        # Extract the extension from the file_path
+        ext = os.path.splitext(file_path)[1]
+        # Create the new file name with the given name and original extension
+        custom_file_name = f"{fileName}{ext}"
+    else:
+        custom_file_name = os.path.basename(file_path)
+
+    return send_file(file_path, as_attachment=True, download_name=custom_file_name)
+

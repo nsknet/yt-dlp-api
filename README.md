@@ -49,6 +49,10 @@ This is a simple Python application that provides several API endpoints to inter
     ```sh
     python main.py
     ```
+    Or
+    ```sh
+    flask run --debug
+    ```
 
 2. The application will start running on `http://127.0.0.1:5000/`.
 
